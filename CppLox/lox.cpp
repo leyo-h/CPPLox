@@ -44,7 +44,7 @@ void Lox::runPrompt(){
 /// @brief Runs LOX script from the source
 /// @param source a string containing the LOX script to be lexed etc...
 void Lox::run(std::string source){
-    std::printf("%s\n", source.c_str());
+    std::printf("========== START OF SCRIPT==========\n%s\n========== END OF SCRIPT==========\n\n", source.c_str());
     Scanner scanner(source);
     std::vector<Token*> tokens = scanner.scanTokens();
     for(Token* t : tokens){

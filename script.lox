@@ -1,1 +1,4 @@
+//This is the test script for the parser!
 print "This is a test!"
+a = 1
+b = 1.1
