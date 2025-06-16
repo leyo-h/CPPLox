@@ -52,12 +52,18 @@ void Lox::run(std::string source){
     }
 }
 
-
+/// @brief Report to the command line
+/// @param line The line of the error
+/// @param where extra details of the error
+/// @param message The error message
 void Lox::report(int line, char* where, const char* message){
      std::printf("[line %i], Error %s: %s\n",line, where, message);
      hadError = true;
     }
 
+/// @brief Report an error to the console
+/// @param line the line the error occured on
+/// @param message the error message
 void Lox::error(int line, const char* message){
     char temp = 0; report(line,&temp, message);
 }

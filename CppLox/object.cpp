@@ -1,5 +1,8 @@
 #include "object.h"
 
+/// @brief Create an object from object type and value
+/// @param type the type of the object
+/// @param value the value of the object to copy
 Object::Object(ObjectType type, ObjectValue value) {
     this->strCopy = std::string("");
     switch (type){
@@ -22,11 +25,15 @@ Object::Object(ObjectType type, ObjectValue value) {
     }
 }
 
+/// @brief Create a num object
+/// @param value the value to store
 Object::Object(double value){
     this->type = NUM_LITERAL;
     this->value.numVal = value;
 }
 
+/// @brief Create a string object
+/// @param value a reference to the string which we make a COPY of 
 Object::Object(std::string* value){
     this->strCopy = std::string("");
     this->type = STR_LITERAL;
@@ -34,11 +41,14 @@ Object::Object(std::string* value){
     this->value.strPtr = &this->strCopy;
 }
 
+/// @brief Create a Bool object
+/// @param value the assosciated bool value
 Object::Object(bool value){
     this->type = BOOL_LITERAL;
     this->value.boolVal = value;
 }
 
+/// @brief Create a NIL object
 Object::Object(){
     this->type = NIL_LITERAL;
     this->value.numVal = 0;
