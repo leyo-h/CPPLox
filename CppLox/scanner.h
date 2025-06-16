@@ -33,6 +33,8 @@ private:
     inline bool isAlphaNumeric(char c);
     inline bool isAlpha(char c);
 
+    void advanceMultilineComment();
+
     //Literal parsing methods
     void string();
     void number();

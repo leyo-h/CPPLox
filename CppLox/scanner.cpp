@@ -41,6 +41,26 @@ char Scanner::peekNext() {
     return source.at(this->current + 1);
 }
 
+void Scanner::advanceMultilineComment(){
+    while(!isAtEnd()){
+        switch (peek()) { 
+            case '\n':
+                this->line++;
+                break;
+            case '*':
+                if (peekNext() == '/'){
+                    advance(); // consume *
+                    advance(); // consume /
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+        advance();
+    }
+}
+
 /// @brief Add a token to the vector of tokens which has a literal of NULL
 /// @param type type of literal
 void Scanner::addToken(TokenType type){
@@ -190,12 +210,19 @@ void Scanner::scanToken(){
         case '{': addToken(TokenType::LEFT_BRACE); break;
         case '}': addToken(TokenType::RIGHT_BRACE); break;
         case ',': addToken(TokenType::COMMA); break;
-        case '.': addToken(TokenType::DOT); break;
+        //case '.': addToken(TokenType::DOT); break;
         case '-': addToken(TokenType::MINUS); break;
         case '+': addToken(TokenType::PLUS); break;
         case ';': addToken(TokenType::SEMICOLON); break;
         case '*': addToken(TokenType::STAR); break; 
-
+        case '.':
+            if (isDigit(peek())){
+                //If the next digit is a . then we can parse the rest a number
+                number();
+            }else{
+                addToken(TokenType::DOT);
+            }
+            break;
         //Matches which can be different lexemes if the following character changes
         //E.g. if its ! then the match fails and we do not consume the next character and add a Bang otherwise we add a bang equal!
         case '!':
@@ -216,6 +243,10 @@ void Scanner::scanToken(){
             if (match('/')) {
                 // A comment goes until the end of the line. so keep consuming till we hit the end of the 
                 while (peek() != '\n' && !isAtEnd()) advance();
+            }else if (match('*')) {
+                // multiline comments
+                advance(); // want to skip the *
+                advanceMultilineComment();
             } else {
                 addToken(SLASH);
             }
