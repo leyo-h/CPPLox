@@ -34,8 +34,38 @@
                 "${workspaceFolder}/cpplox/object.cpp",
                 "${workspaceFolder}/cpplox/scanner.cpp",
                 "${workspaceFolder}/cpplox/token.cpp",
+                "${workspaceFolder}/cpplox/expr.cpp",
+                "${workspaceFolder}/cpplox/astprinter.cpp",
                 "-o",
                 "${workspaceFolder}/bin/cpplox.exe",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: /usr/bin/g++"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ build astprinter debug",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-g",
+                "${workspaceFolder}/cpplox/lox.cpp",
+                "${workspaceFolder}/cpplox/object.cpp",
+                "${workspaceFolder}/cpplox/scanner.cpp",
+                "${workspaceFolder}/cpplox/token.cpp",
+                "${workspaceFolder}/cpplox/expr.cpp",
+                "${workspaceFolder}/cpplox/astprinter.cpp",
+                "${workspaceFolder}/cpplox/astprintertest.cpp",
+                "-o",
+                "${workspaceFolder}/bin/astprinttest.exe",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -6,7 +6,8 @@
 /// @param literal the literal assosciated with the object if it has it
 /// @param line the line the token is on
 Token::Token(TokenType type, std::string lexeme, Object* literal, int line) { 
-    this->type = type; this->lexeme = lexeme; this->line = line; this->literal = literal;
+    this->lexeme = "";
+    this->type = type; this->lexeme += lexeme; this->line = line; this->literal = literal;
 };
 
 /// @brief Delete a token and its LITERAL
@@ -21,4 +22,8 @@ std::string Token::toString() {
     std::string outputStr = std::to_string(this->type) + std::string(" ") + this->lexeme + std::string(" ");
     if (literal != NULL) outputStr + literal->toString(); // if we dont have no literal then we can convert to string
     return outputStr;
+}
+
+std::string Token::getLexme(){
+    return this->lexeme;
 }

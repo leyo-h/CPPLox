@@ -30,6 +30,15 @@
             "args": ["script.lox"],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "C/C++: g++ build cpplox debug"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Printer Script",
+            "program": "${workspaceFolder}/bin/astprinttest.exe",
+            "args": ["script.lox"],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "C/C++: g++ build astprinter debug"
         }
     ]
 }
