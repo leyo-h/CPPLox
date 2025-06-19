@@ -4,7 +4,7 @@
 /// @param source string to scan
 Scanner::Scanner(std::string source) {
     this->source = source;
-    this->tokens = std::vector<Token*>();
+    this->tokens = std::make_unique<std::vector<std::unique_ptr<Token>>>();
 
     this->start = 0;
     this->line = 1;
@@ -64,15 +64,15 @@ void Scanner::advanceMultilineComment(){
 /// @brief Add a token to the vector of tokens which has a literal of NULL
 /// @param type type of literal
 void Scanner::addToken(TokenType type){
-    addToken(type, static_cast<Object*>(NULL));
+    addToken(type, nullptr);
 }
 
 /// @brief Add a token to the vector of tokens
 /// @param type the type of the token
 /// @param literal the literal assosciated with it e.g. string names etc or double values
-void Scanner::addToken(TokenType type, Object* literal){
+void Scanner::addToken(TokenType type, std::unique_ptr<Object>  literal){
     std::string text = this->source.substr(start, current-start);
-    tokens.push_back(new Token(type, text, literal, line));
+    tokens->push_back(std::make_unique<Token>(type, text, std::move(literal), line));
 }
 
 /// @brief Checks if the next character is expected if it is it consumes it
@@ -102,7 +102,7 @@ void Scanner::string() {
     
     //Create the token 
     std::string val = source.substr(start + 1, current - 1 - start);
-    addToken(TokenType::STRING, new Object(&val));
+    addToken(TokenType::STRING, std::make_unique<Object>(&val));
 }
 
 /// @brief Returns if the char is a valid digit
@@ -125,7 +125,7 @@ void Scanner::number() {
     }
 
     addToken(NUMBER,
-        new Object(std::stod(source.substr(start, current - start))));
+        std::make_unique<Object>(std::stod(source.substr(start, current - start))));
 
 }
 
@@ -179,14 +179,14 @@ void Scanner::initKeywordsMap() {
 
 /// @brief Removes whitespace
 /// @return A vector of strings which are the individual tokens
-std::vector<Token*> Scanner::scanTokens(){
+std::unique_ptr<std::vector<std::unique_ptr<Token>>> Scanner::scanTokens(){
     while(!this->isAtEnd()){
         this->start = current;
         this->scanToken();
     }
 
-    tokens.push_back(new Token(TokenType::ENDOFFILE, std::string(""),NULL, line));
-    return tokens;
+    tokens->push_back(std::make_unique<Token>(TokenType::ENDOFFILE, std::string(""),nullptr, line));
+    return std::move(tokens);
 }
 
 /// @brief Scans the next token from source and adds it to the vector of tokens

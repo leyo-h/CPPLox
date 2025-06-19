@@ -46,10 +46,17 @@ void Lox::runPrompt(){
 void Lox::run(std::string source){
     std::printf("========== START OF SCRIPT==========\n%s\n========== END OF SCRIPT==========\n\n", source.c_str());
     Scanner scanner(source);
-    std::vector<Token*> tokens = scanner.scanTokens();
-    for(Token* t : tokens){
+    std::unique_ptr<std::vector<std::unique_ptr<Token>>>  tokens = scanner.scanTokens();
+    for(auto&& t : *tokens.get()){ //cheating atm and just getting the raw ptr oops
         std::printf("TOKEN: %s\n", t->toString().c_str());
     }
+
+    Parser parser = Parser(std::move(tokens));
+    std::unique_ptr<Expr> expression = parser.parse();
+    
+    ASTPrinter* printer = new ASTPrinter();
+    printer->print(*expression.get());
+    std::printf("%s",expression.get()->printResult.c_str());
 }
 
 /// @brief Report to the command line

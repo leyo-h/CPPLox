@@ -7,6 +7,8 @@
 #include <sstream>
 #include <vector>
 #include "scanner.h"
+#include "parser.h"
+#include "astprinter.h"
 
 class Lox {
 private:

@@ -11,7 +11,7 @@
 class Scanner{
 private:
     std::string source;
-    std::vector<Token*> tokens;
+    std::unique_ptr<std::vector<std::unique_ptr<Token>>> tokens;
 
     //Scanner positions
     int start;
@@ -25,7 +25,7 @@ private:
     //Scanner helper methods
     char advance();
     void addToken(TokenType type);
-    void addToken(TokenType type, Object* literal);
+    void addToken(TokenType type, std::unique_ptr<Object> literal);
     bool match(char expected);
     char peek();
     char peekNext();
@@ -45,5 +45,5 @@ private:
     void initKeywordsMap();
 public:
     Scanner(std::string source);
-    std::vector<Token*> scanTokens();
+    std::unique_ptr<std::vector<std::unique_ptr<Token>>> scanTokens();
 };
