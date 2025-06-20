@@ -3,8 +3,9 @@
 
 /// @brief Sets the print result of the
 /// @param expr expression to run on
-void ASTPrinter::print(Expr& expr){
-    expr.accept(*this);
+std::unique_ptr<Expr> ASTPrinter::print(std::unique_ptr<Expr> expr){
+    expr->accept(*this);
+    return std::move(expr);
 }
 
 /// @brief Creates the parenthesized tree string (the brackets show how tokens/ expr are grouped together in the tree)

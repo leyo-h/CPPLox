@@ -109,15 +109,19 @@ std::unique_ptr<Expr> Parser::unary() {
 
         return std::make_unique<UnaryExpr>(std::move(op),std::move(right));
     }
-    return primary();
+    return std::move(primary());
 }
 
 std::unique_ptr<Expr> Parser::primary() {
-    if(match({TokenType::FALSE})) return std::make_unique<LiteralExpr>(std::make_unique<Object>(false));
-    if(match({TokenType::TRUE})) return std::make_unique<LiteralExpr>(std::make_unique<Object>(true));
-    if(match({TokenType::NIL})) return std::make_unique<LiteralExpr>(std::make_unique<Object>());
-    
-    if(match({TokenType::NUMBER,TokenType::STRING})) {
+    if(match({TokenType::FALSE})) {
+        return std::make_unique<LiteralExpr>(std::make_unique<Object>(false));
+    }else if(match({TokenType::TRUE})) {
+        return std::make_unique<LiteralExpr>(std::make_unique<Object>(true));
+    }else if(match({TokenType::NIL})) {
+         printf("hmmm nil token thats wrong :(\n");
+         return std::make_unique<LiteralExpr>(std::make_unique<Object>());
+        }
+    else if(match({TokenType::NUMBER,TokenType::STRING})) {
         //std::printf("time to move our token into the new objest\n");
         //std::printf("consuming %i\n",previous());
 
@@ -129,6 +133,8 @@ std::unique_ptr<Expr> Parser::primary() {
         consume(RIGHT_PAREN, "Expect ')' after expression");
         return std::make_unique<GroupingExpr>(std::move(expr));
     }
+    printf("Uh oh super invalid primary call! \n\n\n");
+    return nullptr;
 
 }
 

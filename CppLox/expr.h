@@ -36,7 +36,7 @@ public:
     virtual ~Expr() = default;
     virtual void accept(ASTNode& visitor) = 0;
 
-    Object result;
+    std::unique_ptr<Object> result;
     string printResult;
 };
 

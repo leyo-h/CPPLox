@@ -54,9 +54,13 @@ void Lox::run(std::string source){
     Parser parser = Parser(std::move(tokens));
     std::unique_ptr<Expr> expression = parser.parse();
     
-    ASTPrinter* printer = new ASTPrinter();
-    printer->print(*expression.get());
-    std::printf("%s",expression.get()->printResult.c_str());
+    ASTPrinter printer = ASTPrinter();
+    expression = printer.print(std::move(expression));
+    std::printf("%s\n",expression.get()->printResult.c_str());
+
+    Interpreter interpreter = Interpreter();
+    expression = interpreter.interpret(std::move(expression));
+    printf("%s\n",expression->result->toString().c_str());
 }
 
 /// @brief Report to the command line

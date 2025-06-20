@@ -16,6 +16,14 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Launch Script w/o build",
+            "program": "${workspaceFolder}/bin/cpplox.exe",
+            "args": ["script.lox"],
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug",
             "program": "${workspaceFolder}/bin/cpplox.exe",
             "args": [],
@@ -39,6 +47,33 @@
             "args": ["script.lox"],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "C/C++: g++ build astprinter debug"
-        }
+        },
+        {
+
+            "name": "(gdb) Launch script",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/cpplox.exe",
+            "args": ["script.lox"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "C/C++: g++ build cpplox debug",
+            "miDebuggerPath": "C://msys64/mingw64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
     ]
 }

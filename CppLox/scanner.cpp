@@ -101,7 +101,7 @@ void Scanner::string() {
     advance();
     
     //Create the token 
-    std::string val = source.substr(start + 1, current - 1 - start);
+    std::string val = source.substr(start + 1, current - 2 - start);
     addToken(TokenType::STRING, std::make_unique<Object>(&val));
 }
 
@@ -164,6 +164,7 @@ void Scanner::initKeywordsMap() {
     keywords.insert({std::string("and"), AND});
     keywords.insert({std::string("class"), CLASS});
     keywords.insert({std::string("else"), ELSE});
+    keywords.insert({std::string("false"), FALSE});
     keywords.insert({std::string("for"), FOR});
     keywords.insert({std::string("if"), IF});
     keywords.insert({std::string("nil"), NIL});

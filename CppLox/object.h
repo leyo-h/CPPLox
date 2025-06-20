@@ -2,6 +2,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory>
 
 //4 types of literal supported by our object
 typedef enum ObjectType_T {
@@ -31,9 +32,10 @@ public:
     Object(std::string* value);
     Object();
     //Getters as we dont need to change either of the objects properties after we start
-    ObjectType getType();
-    ObjectValue getValue();
+    ObjectType getType() const;
+    ObjectValue getValue() const;
 
-    std::string toString();
+    std::string toString() const;
+    std::unique_ptr<Object> dup();
 };
 

@@ -14,10 +14,10 @@ private:
 public:
     Token(TokenType type, std::string lexeme, std::unique_ptr<Object>  literal, int line);
     ~Token();
-    std::string toString();
-    std::string getLexme();
-    TokenType getType();
-    int getLine();
+    std::string toString() const;
+    std::string getLexme() const;
+    TokenType getType() const;
+    int getLine() const;
 
     std::unique_ptr<Object> literal; //idk what this is?
 };

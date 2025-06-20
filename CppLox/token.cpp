@@ -16,22 +16,22 @@ Token::~Token() {
 
 /// @brief Converts a token to the string containing the token type, its lexeme and if possible its literal value
 /// @return returns the string
-std::string Token::toString() {
+std::string Token::toString() const {
 
     std::string outputStr = std::to_string(this->type) + std::string(" ") + this->lexeme + std::string(" ");
     if (literal != nullptr) outputStr + literal->toString(); // if we dont have no literal then we can convert to string
     return outputStr;
 }
 
-std::string Token::getLexme(){
+std::string Token::getLexme() const{
     return this->lexeme;
 }
 
-TokenType Token::getType(){
+TokenType Token::getType() const{
     return this->type;
 }
 
 
-int Token::getLine(){
+int Token::getLine() const{
     return line;
 }

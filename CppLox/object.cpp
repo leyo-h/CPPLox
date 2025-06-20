@@ -21,6 +21,10 @@ Object::Object(ObjectType type, ObjectValue value) {
             this->strCopy = *value.strPtr;
             this->value.strPtr = &this->strCopy; // point to our local copy
             break;
+        case BOOL_LITERAL:
+            this->type = BOOL_LITERAL;
+            this->value.boolVal = value.boolVal;
+            break;
 
     }
 }
@@ -54,7 +58,8 @@ Object::Object(){
     this->value.numVal = 0;
 }
 
-std::string Object::toString() {
+std::string Object::toString() const{
+    printf("do we even have an object?%p, %p\n",type,value);
     switch (type)
     {
     case NUM_LITERAL :
@@ -62,7 +67,12 @@ std::string Object::toString() {
         break;
 
     case STR_LITERAL :
-        return *value.strPtr;
+        if(value.strPtr == NULL) printf("oopsie null string pointer...\n");
+        return "" + *value.strPtr;
+        break;
+    case BOOL_LITERAL:
+        if (value.boolVal) return "true";
+        return "false";
         break;
     default:
         return std::string("NIL");
@@ -70,10 +80,17 @@ std::string Object::toString() {
 }
 
 //Getters as we dont need to change either of the objects properties after we start
-ObjectType Object::getType() {
+ObjectType Object::getType() const{
      return type;
     };
 
-ObjectValue Object::getValue() {
+ObjectValue Object::getValue() const {
      return value;
     };
+
+/// @brief Duplicates an object
+/// @return returns a pointer to the duplicated object
+std::unique_ptr<Object> Object::dup() {
+    std::unique_ptr<Object> output = std::make_unique<Object>(type, value);
+    return std::move(output);
+}

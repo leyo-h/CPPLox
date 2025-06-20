@@ -9,6 +9,7 @@
 #include "scanner.h"
 #include "parser.h"
 #include "astprinter.h"
+#include "interpreter.h"
 
 class Lox {
 private:
