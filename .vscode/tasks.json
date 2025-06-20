@@ -38,6 +38,7 @@
                 "${workspaceFolder}/cpplox/astprinter.cpp",
                 "${workspaceFolder}/cpplox/parser.cpp",
                 "${workspaceFolder}/cpplox/interpreter.cpp",
+                "${workspaceFolder}/cpplox/stmt.cpp",
                 "-o",
                 "${workspaceFolder}/bin/cpplox.exe",
             ],

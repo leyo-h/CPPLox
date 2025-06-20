@@ -167,9 +167,30 @@ void Interpreter::checkNumberOperands(const Token &token, const Object& left, co
     }  
 }
 
-std::unique_ptr<Expr> Interpreter::interpret(std::unique_ptr<Expr> expr) {
+//Statements
+void Interpreter::visit(PrintStmt& printStmt) {
+    printStmt.expression = evaluate(std::move(printStmt.expression));
+    printf("PRINT RESULT %s",printStmt.expression->result->toString().c_str());
+}
+
+void Interpreter::visit(ExpressionStmt& expressionStmt) {
+    expressionStmt.expression = evaluate(std::move(expressionStmt.expression));
+}
+
+std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::interpret(std::unique_ptr<vector<unique_ptr<Stmt>>> statements) {
     //dont really like throwing exceptionss and catching them,....
-    expr = evaluate(std::move(expr));
-    printf("is null pointer? %p\n",expr.get());
-    return std::move(expr);
+    try{
+        for(int i = 0; i<statements->size();i++){
+            (*statements.get())[i] = execute(std::move(statements->at(i)));
+        }
+    }catch (runtime_error e){
+        printf("runtime error :(");
+        was_error = true;
+    }
+    return std::move(statements);
+}
+
+unique_ptr<Stmt> Interpreter::execute(unique_ptr<Stmt> statement){
+    statement->accept(*this);
+    return move(statement);
 }

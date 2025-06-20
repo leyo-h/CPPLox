@@ -41,3 +41,11 @@ void ASTPrinter::visit(UnaryExpr& unaryExpr) {
 void ASTPrinter::visit(GroupingExpr& groupingExpr) {
     groupingExpr.printResult = parenthesize("group", {groupingExpr.expr.get()});
 }
+
+void ASTPrinter::visit(PrintStmt& printStmt) {
+    printStmt.printResult = parenthesize("print", {printStmt.expression.get()});
+}
+
+void ASTPrinter::visit(ExpressionStmt& expressionStmt) {
+    expressionStmt.printResult = parenthesize("", {expressionStmt.expression.get()});
+}

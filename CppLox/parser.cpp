@@ -41,7 +41,7 @@ int Parser::peek() {
 /// @brief Returns the previous token or 0 if there is no previous token
 /// @return Returns the previous token or 0 if there is no previous token
 int Parser::previous() {
-
+    if (current - 1 < 0) printf("bad token at the start of the block\n");
     return max(0,current - 1); // clamp the prev to hit -1 should be fine tho as it would be a parser error if we start with an = etc.
 }
 
@@ -142,13 +142,38 @@ int Parser::consume(TokenType type, const char* message) {
     if(check(type)) return advance();
 
     Lox::error(tokens->at(peek())->getLine(), message);
-    exit(1);
+    throw runtime_error("");
 }
 
 Parser::Parser(std::unique_ptr<std::vector<unique_ptr<Token>>> setTokens) {
     tokens = std::move(setTokens);
 }
 
-std::unique_ptr<Expr> Parser::parse(){
-    return expression();
+//======== Statements=========
+unique_ptr<Stmt> Parser::statement(){
+    if(match({PRINT})) return std::move(printStatement());
+
+    return std::move(expressionStatement());
+}
+
+std::unique_ptr<Stmt> Parser::printStatement(){
+    unique_ptr<Expr> expr = expression();
+    consume(SEMICOLON,"expected semicolon after value");
+    return std::move(std::make_unique<PrintStmt>(std::move(expr)));
+
+}
+
+std::unique_ptr<Stmt> Parser::expressionStatement(){
+    unique_ptr<Expr> expr = expression();
+    consume(SEMICOLON,"expected semicolon after expression");
+    return std::move(std::make_unique<ExpressionStmt>(std::move(expr)));
+}
+
+
+std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::parse(){
+    std::unique_ptr<vector<unique_ptr<Stmt>>> statements = make_unique<vector<unique_ptr<Stmt>>>();
+    while(!isAtEnd()) {
+        statements->push_back(statement());
+    }
+    return std::move(statements);
 }
