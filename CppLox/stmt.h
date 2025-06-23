@@ -57,3 +57,18 @@ public:
     unique_ptr<std::vector<unique_ptr<Stmt>>> statements;
 };
 
+class IfStmt : public Stmt {
+private:
+
+protected:
+
+public:
+    IfStmt(unique_ptr<Expr> setCondition, unique_ptr<Stmt> setThenBranch, unique_ptr<Stmt> setElseBranch);
+    void accept(ASTNode& visitor) override;
+    unique_ptr<Expr> condition;
+    unique_ptr<Stmt> thenBranch;
+    unique_ptr<Stmt> elseBranch;
+
+};
+
+

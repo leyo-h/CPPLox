@@ -38,5 +38,6 @@ public:
     void visit(PrintStmt& printStmt) override;
     void visit(VarStmt& node) override;
     void visit(BlockStmt& node) override;
+    void visit(IfStmt& node) override;
 
 };

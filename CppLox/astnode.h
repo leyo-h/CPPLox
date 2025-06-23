@@ -13,6 +13,7 @@ class ExpressionStmt;
 class PrintStmt;
 class VarStmt;
 class BlockStmt;
+class IfStmt;
 
 /*
 Implementing "double dispatch" which is our method has to depend on 2 types ( later if its a statement or expression and then on the type?)
@@ -38,4 +39,6 @@ public:
     virtual void visit(PrintStmt& node) = 0;
     virtual void visit(VarStmt& node) = 0;
     virtual void visit(BlockStmt& node) = 0;
+    virtual void visit(IfStmt& node) = 0;
+
 };

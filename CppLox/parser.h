@@ -26,6 +26,7 @@ private:
     std::unique_ptr<Stmt> expressionStatement();
     std::unique_ptr<Stmt> declaration();
     std::unique_ptr<Stmt> varDeclaration();
+    std::unique_ptr<Stmt> ifStatement();
     std::unique_ptr<vector<unique_ptr<Stmt>>> block();
 
 

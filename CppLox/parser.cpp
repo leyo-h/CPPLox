@@ -172,7 +172,9 @@ Parser::Parser(std::unique_ptr<std::vector<unique_ptr<Token>>> setTokens) {
 
 //======== Statements=========
 unique_ptr<Stmt> Parser::statement() {
+    if(match({IF})) return std::move(ifStatement());
     if(match({PRINT})) return std::move(printStatement());
+    if(match({LEFT_BRACE})) return move(make_unique<BlockStmt>(block()));
 
     return std::move(expressionStatement());
 }
@@ -181,6 +183,23 @@ std::unique_ptr<Stmt> Parser::printStatement() {
     unique_ptr<Expr> expr = expression();
     consume(SEMICOLON,"expected semicolon after value");
     return std::move(std::make_unique<PrintStmt>(std::move(expr)));
+
+}
+
+std::unique_ptr<Stmt> Parser::ifStatement() {
+    consume(LEFT_PAREN, "Expected ( after if");
+    std::unique_ptr<Expr> condition = expression();
+    consume(RIGHT_PAREN, "Expected ) after condition");
+    // collect branches
+    std::unique_ptr<Stmt> thenBranch = statement();
+    std::unique_ptr<Stmt> elseBranch = nullptr;
+
+    if(match({ELSE})) {
+        //if the next token is an else token then there is an else branch
+        elseBranch = statement();
+    }
+
+    return move(make_unique<IfStmt>(move(condition),move(thenBranch),move(elseBranch)));
 
 }
 

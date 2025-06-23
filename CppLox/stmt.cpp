@@ -36,3 +36,15 @@ BlockStmt::BlockStmt(unique_ptr<std::vector<unique_ptr<Stmt>>> setStatements) {
 void BlockStmt::accept(ASTNode& visitor) {
     visitor.visit(*this);
 }
+
+
+IfStmt::IfStmt(unique_ptr<Expr> setCondition, unique_ptr<Stmt> setThenBranch, unique_ptr<Stmt> setElseBranch) {
+    condition = move(setCondition);
+    thenBranch = move(setThenBranch);
+    elseBranch = move(setElseBranch);
+
+}
+
+void IfStmt::accept(ASTNode& visitor) {
+    visitor.visit(*this);
+}

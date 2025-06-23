@@ -208,6 +208,15 @@ void  Interpreter::visit(BlockStmt& node) {
    node.statements = executeBlock(move(node.statements), make_shared<Environment>(environment));
 }
 
+void Interpreter::visit(IfStmt& node) {
+    node.condition =  evaluate(move(node.condition));
+    if(isTruthy(*node.condition->result)) {
+        node.thenBranch = execute(move(node.thenBranch));
+    }else if(node.elseBranch != nullptr) {
+        node.elseBranch = execute(move(node.elseBranch));
+    }
+}
+
 std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env) {
     shared_ptr<Environment> prevEnvironment = this->environment;
     this->environment = env; // we swap out our current env to the local one
