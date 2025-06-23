@@ -28,7 +28,7 @@ public:
     void visit(GroupingExpr& node) override;
     void visit(VariableExpr& node) override;
     void visit(AssignExpr& node) override;
-
+    void visit(LogicalExpr& node) override;
 
     bool was_error = false;
     std::unique_ptr<Expr> evaluate(std::unique_ptr<Expr> expr);

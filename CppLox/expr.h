@@ -91,3 +91,14 @@ public:
     std::unique_ptr<Token> name;
     std::unique_ptr<Expr> value;
 };
+
+class LogicalExpr : public Expr {
+private:
+
+public:
+    void accept(ASTNode& visitor) override;
+    LogicalExpr(std::unique_ptr<Expr> setLeft, std::unique_ptr<Token> setOp,std::unique_ptr<Expr> setRight);
+    unique_ptr<Expr> left;
+    unique_ptr<Token> op;
+    unique_ptr<Expr> right;
+};

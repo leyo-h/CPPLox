@@ -19,7 +19,8 @@ private:
     std::unique_ptr<Expr> unary();
     std::unique_ptr<Expr> primary();
     std::unique_ptr<Expr> assignment();
-
+    std::unique_ptr<Expr> parseOr();
+    std::unique_ptr<Expr> parseAnd();
 
     std::unique_ptr<Stmt> statement();
     std::unique_ptr<Stmt> printStatement();
@@ -28,7 +29,7 @@ private:
     std::unique_ptr<Stmt> varDeclaration();
     std::unique_ptr<Stmt> ifStatement();
     std::unique_ptr<vector<unique_ptr<Stmt>>> block();
-
+    
 
     //Helpers
     bool match(std::vector<TokenType> types);

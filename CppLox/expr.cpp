@@ -65,3 +65,14 @@ AssignExpr::AssignExpr(std::unique_ptr<Token> setName, std::unique_ptr<Expr> set
     value = move(setValue);
     this->type = ASSIGN;
 }
+
+LogicalExpr::LogicalExpr(std::unique_ptr<Expr> setLeft, std::unique_ptr<Token> setOp,std::unique_ptr<Expr> setRight){
+    this->left = std::move(setLeft);
+    this->right = std::move(setRight);
+    this->op = std::move(setOp);
+    this->type = BINARY;
+}
+
+void LogicalExpr::accept(ASTNode& visitor){
+    visitor.visit(*this);
+}

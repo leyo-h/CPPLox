@@ -114,6 +114,24 @@ void Interpreter::visit(AssignExpr& node) {
     node.result = node.value->result->dup(); // lets us assign and then use the variable :) e.g. print a = 2 -- prints 2!
 }
 
+void Interpreter::visit(LogicalExpr& node) {
+    node.left = evaluate(move(node.left));
+
+    if(node.op->getType() == TokenType::OR) {
+        if(isTruthy(left)) {
+            node.result = node.left->result->dup();
+            return;
+        }
+    } else if(!isTruthy(left)){
+            node.result = node.left->result->dup();
+            return;
+    }
+
+    node.right = evaluate(move(node.right));
+    node.result =  node.right->result->dup();
+    return;
+}
+
 std::unique_ptr<Expr> Interpreter::evaluate(std::unique_ptr<Expr> expr){
     expr->accept(*this);
     //printf("has anything happened when we accept? %i\n",expr->result->getValue().boolVal);

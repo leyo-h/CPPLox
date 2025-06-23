@@ -1,7 +1,8 @@
-var a = true;
-if(a == false) {
+var a = true or false;
+if(true and false){
     print "A is ";
     print a;
 }else{
     print "false!!!";
+    print a;
 }

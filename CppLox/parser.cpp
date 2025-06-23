@@ -145,7 +145,7 @@ std::unique_ptr<Expr> Parser::primary() {
 
 std::unique_ptr<Expr> Parser::assignment() {
     //This recursively evaluates r-values so that we can turn them into l-values
-    std::unique_ptr<Expr> expr = move(equality());
+    std::unique_ptr<Expr> expr = move(parseOr());
 
     if (match({EQUAL})) { 
         std::unique_ptr<Token> equals = std::move(tokens->at(previous()));
@@ -155,6 +155,34 @@ std::unique_ptr<Expr> Parser::assignment() {
             std::unique_ptr<Token> name = move(dynamic_cast<VariableExpr&>(*expr).name); // this should never fail butt just incase :)
             return move(make_unique<AssignExpr>(move(name),move(value)));
         }
+    }
+    return move(expr);
+}
+
+
+std::unique_ptr<Expr> Parser::parseOr() {
+    // parse or values 
+    std::unique_ptr<Expr> expr = parseAnd();
+    printf("In PARSE OR\n\n");
+    while (match({OR})) { 
+        std::unique_ptr<Token> op = std::move(tokens->at(previous()));
+        std::unique_ptr<Expr> right = parseAnd();
+
+        expr = make_unique<LogicalExpr>(move(expr), move(op), move(right));
+    }
+    return move(expr);
+}
+
+std::unique_ptr<Expr> Parser::parseAnd() {
+    //This recursively evaluates r-values so that we can turn them into l-values
+    std::unique_ptr<Expr> expr = move(equality());
+
+    while (match({AND})) { 
+        std::unique_ptr<Token> op = std::move(tokens->at(previous()));
+        printf("op %s\n",op->getLexme().c_str());
+        std::unique_ptr<Expr> right = move(equality());
+
+        expr = make_unique<LogicalExpr>(move(expr), move(op), move(right));
     }
     return move(expr);
 }
