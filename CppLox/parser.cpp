@@ -46,7 +46,7 @@ int Parser::previous() {
 }
 
 std::unique_ptr<Expr> Parser::expression(){
-    return equality();
+    return assignment();
 }
 
 std::unique_ptr<Expr> Parser::equality(){
@@ -142,6 +142,23 @@ std::unique_ptr<Expr> Parser::primary() {
 
 }
 
+
+std::unique_ptr<Expr> Parser::assignment() {
+    //This recursively evaluates r-values so that we can turn them into l-values
+    std::unique_ptr<Expr> expr = move(equality());
+
+    if (match({EQUAL})) { 
+        std::unique_ptr<Token> equals = std::move(tokens->at(previous()));
+        std::unique_ptr<Expr> value = assignment();
+
+        if(expr->getType() == VARIABLE) {
+            std::unique_ptr<Token> name = move(dynamic_cast<VariableExpr&>(*expr).name); // this should never fail butt just incase :)
+            return move(make_unique<AssignExpr>(move(name),move(value)));
+        }
+    }
+    return move(expr);
+}
+
 int Parser::consume(TokenType type, const char* message) {
     if(check(type)) return advance();
 
@@ -176,7 +193,7 @@ std::unique_ptr<Stmt> Parser::expressionStatement() {
 
 std::unique_ptr<Stmt> Parser::declaration() {
     if(match({VAR})) return move(varDeclaration());
-
+    if(match({LEFT_BRACE})) return move(make_unique<BlockStmt>(block()));
     return std::move(statement());
 
 }
@@ -193,6 +210,18 @@ std::unique_ptr<Stmt> Parser::varDeclaration() {
     consume(SEMICOLON,"Expected ; after variable declaration");
     return make_unique<VarStmt>(move(tokens->at(tkIdx)), move(initialiser));
 }
+
+
+std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::block() {
+    std::unique_ptr<vector<unique_ptr<Stmt>>> statements = std::make_unique<vector<unique_ptr<Stmt>>>();
+    while(!check(RIGHT_BRACE) && !isAtEnd()) {
+        statements->push_back(declaration());
+
+    }
+    consume(RIGHT_BRACE, "Expected } after block");
+    return move(statements);
+}
+
 
 std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::parse(){
     std::unique_ptr<vector<unique_ptr<Stmt>>> statements = make_unique<vector<unique_ptr<Stmt>>>();

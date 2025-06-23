@@ -10,7 +10,12 @@ private:
 
 public:
     void define(string name, shared_ptr<Object> obj);
+    void define(Token& name, shared_ptr<Object> obj);
+    void assign(Token& name, shared_ptr<Object> obj);
+
     shared_ptr<Object> get(string name);
-    shared_ptr<Object> get(Token name);
+    shared_ptr<Object> get(Token& name);
+    shared_ptr<Environment> enclosing;
     Environment();
+    Environment(shared_ptr<Environment> enclosing);
 };  

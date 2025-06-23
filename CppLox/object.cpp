@@ -59,7 +59,7 @@ Object::Object(){
 }
 
 std::string Object::toString() const{
-    printf("do we even have an object?%p, %p\n",type,value);
+    //printf("do we even have an object?%p, %p\n",type,value);
     switch (type)
     {
     case NUM_LITERAL :

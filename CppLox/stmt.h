@@ -4,6 +4,7 @@
 #include <string>
 #include "object.h"
 #include "expr.h"
+#include <vector>
 
 using namespace std;
 class Stmt {
@@ -43,5 +44,16 @@ public:
     VarStmt(unique_ptr<Token> name, unique_ptr<Expr> initialiser);
     unique_ptr<Token> name;
     unique_ptr<Expr> initialiser;
+};
+
+class BlockStmt : public Stmt {
+private:
+
+protected:
+
+public:
+    BlockStmt(unique_ptr<std::vector<unique_ptr<Stmt>>> setStatements);
+    void accept(ASTNode& visitor) override;
+    unique_ptr<std::vector<unique_ptr<Stmt>>> statements;
 };
 

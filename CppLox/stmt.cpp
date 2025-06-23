@@ -27,5 +27,12 @@ VarStmt::VarStmt(unique_ptr<Token> setName, unique_ptr<Expr> setInitialiser){
     name = move(setName);
     initialiser = move(setInitialiser);
 
+}
 
+BlockStmt::BlockStmt(unique_ptr<std::vector<unique_ptr<Stmt>>> setStatements) {
+    statements = move(setStatements);
+}
+
+void BlockStmt::accept(ASTNode& visitor) {
+    visitor.visit(*this);
 }

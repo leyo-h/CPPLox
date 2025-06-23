@@ -6,8 +6,20 @@
 #include "astnode.h"
 //Forward declare the classes
 
+typedef enum EXPRTYPE_T {
+    BINARY,
+    GROUPING,
+    LITERAL,
+    UNARY,
+    VARIABLE,
+    ASSIGN,
+} EXPRTYPE;
+
+
 class Expr {
 private:
+protected:
+    EXPRTYPE type = BINARY;
 public:
     Expr() = default;
     virtual ~Expr() = default;
@@ -15,6 +27,8 @@ public:
 
     std::unique_ptr<Object> result;
     string printResult;
+    EXPRTYPE getType();
+
 };
 
 class BinaryExpr : public Expr {
@@ -65,4 +79,15 @@ public:
     void accept(ASTNode& visitor) override;
     VariableExpr(std::unique_ptr<Token> setName);
     std::unique_ptr<Token> name;
+};
+
+
+class AssignExpr : public Expr {
+private:
+
+public:
+    void accept(ASTNode& visitor) override;
+    AssignExpr(std::unique_ptr<Token> setName, std::unique_ptr<Expr> setValue);
+    std::unique_ptr<Token> name;
+    std::unique_ptr<Expr> value;
 };

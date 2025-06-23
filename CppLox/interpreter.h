@@ -13,7 +13,9 @@ private:
     void checkNumberOperands(const Token& token, const Object& left, const Object& right);
 
     unique_ptr<Stmt> execute(unique_ptr<Stmt> statement);
-    unique_ptr<Environment> environment;
+    shared_ptr<Environment> environment;
+
+    std::unique_ptr<vector<unique_ptr<Stmt>>> executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env);
 public:
     virtual ~Interpreter() = default;
     Interpreter();
@@ -25,7 +27,9 @@ public:
     void visit(UnaryExpr& node) override;
     void visit(GroupingExpr& node) override;
     void visit(VariableExpr& node) override;
-    
+    void visit(AssignExpr& node) override;
+
+
     bool was_error = false;
     std::unique_ptr<Expr> evaluate(std::unique_ptr<Expr> expr);
 
@@ -33,6 +37,6 @@ public:
     void visit(ExpressionStmt& expressionStmt) override;
     void visit(PrintStmt& printStmt) override;
     void visit(VarStmt& node) override;
-
+    void visit(BlockStmt& node) override;
 
 };

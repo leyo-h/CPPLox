@@ -71,7 +71,7 @@ void Interpreter::visit(BinaryExpr& node) {
 /// @param node 
 void Interpreter::visit(LiteralExpr& node) {
     node.result = node.value->dup();
-    printf("dup check %s , %s\n",node.value->toString().c_str(),node.result->toString().c_str());
+    //printf("dup check %s , %s\n",node.value->toString().c_str(),node.result->toString().c_str());
 }
 
 /// @brief Evaluates a unary expression
@@ -102,17 +102,24 @@ void Interpreter::visit(GroupingExpr& node) {
 }
 
 
-void Interpreter::visit(VariableExpr& node){
+void Interpreter::visit(VariableExpr& node) {
     shared_ptr<Object> evaluated = environment->get(node.name->getLexme()); //oops shouldve just stuck to unique ptrs lol?
 
     node.result = evaluated->dup();
 }
 
+void Interpreter::visit(AssignExpr& node) {
+    node.value = move(evaluate(move(node.value)));
+    environment->assign(*node.name, make_shared<Object>(node.value->result->getType(),node.value->result->getValue()));
+    node.result = node.value->result->dup(); // lets us assign and then use the variable :) e.g. print a = 2 -- prints 2!
+}
+
 std::unique_ptr<Expr> Interpreter::evaluate(std::unique_ptr<Expr> expr){
     expr->accept(*this);
-    printf("has anything happened when we accept? %i\n",expr->result->getValue().boolVal);
+    //printf("has anything happened when we accept? %i\n",expr->result->getValue().boolVal);
     return std::move(expr);
 }
+
 
 /// @brief Returns if a value is true or not
 /// @param obj the object to check
@@ -178,7 +185,7 @@ void Interpreter::checkNumberOperands(const Token &token, const Object& left, co
 //Statements
 void Interpreter::visit(PrintStmt& printStmt) {
     printStmt.expression = evaluate(std::move(printStmt.expression));
-    printf("PRINT RESULT %s",printStmt.expression->result->toString().c_str());
+    printf("%s",printStmt.expression->result->toString().c_str());
 }
 
 void Interpreter::visit(ExpressionStmt& expressionStmt) {
@@ -197,6 +204,20 @@ void  Interpreter::visit(VarStmt& node) {
 }
 
 
+void  Interpreter::visit(BlockStmt& node) {
+   node.statements = executeBlock(move(node.statements), make_shared<Environment>(environment));
+}
+
+std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env) {
+    shared_ptr<Environment> prevEnvironment = this->environment;
+    this->environment = env; // we swap out our current env to the local one
+    for(int i =0; i < statements->size(); i++) {
+        (*statements)[i] = execute(move(statements->at(i)));
+    }
+    this->environment = prevEnvironment; // set the environment back to the original one
+    return move(statements);
+}
+
 std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::interpret(std::unique_ptr<vector<unique_ptr<Stmt>>> statements) {
     //dont really like throwing exceptionss and catching them,....
     try{
@@ -214,3 +235,4 @@ unique_ptr<Stmt> Interpreter::execute(unique_ptr<Stmt> statement){
     statement->accept(*this);
     return move(statement);
 }
+
