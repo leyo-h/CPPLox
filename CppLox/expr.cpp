@@ -36,3 +36,10 @@ void UnaryExpr::accept(ASTNode& visitor){
     visitor.visit(*this);
 }
 
+void VariableExpr::accept(ASTNode& visitor) {
+    visitor.visit(*this);
+};
+
+VariableExpr::VariableExpr(std::unique_ptr<Token> setName) {
+    name = move(setName);
+}

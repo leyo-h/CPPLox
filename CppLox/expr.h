@@ -57,3 +57,12 @@ public:
     unique_ptr<Token> op;
     unique_ptr<Expr> right;
 };
+
+class VariableExpr : public Expr {
+private:
+
+public:
+    void accept(ASTNode& visitor) override;
+    VariableExpr(std::unique_ptr<Token> setName);
+    std::unique_ptr<Token> name;
+};

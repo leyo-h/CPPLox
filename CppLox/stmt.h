@@ -34,3 +34,14 @@ public:
     PrintStmt(std::unique_ptr<Expr> setExpression);
     unique_ptr<Expr> expression;
 };
+
+class VarStmt : public Stmt {
+private:
+
+public:
+    void accept(ASTNode& visitor) override;
+    VarStmt(unique_ptr<Token> name, unique_ptr<Expr> initialiser);
+    unique_ptr<Token> name;
+    unique_ptr<Expr> initialiser;
+};
+

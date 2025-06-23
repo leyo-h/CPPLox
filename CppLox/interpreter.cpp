@@ -2,6 +2,7 @@
 
 Interpreter::Interpreter() {
 
+    this->environment = make_unique<Environment>();
 }
 
 void Interpreter::visit(BinaryExpr& node) {
@@ -100,6 +101,13 @@ void Interpreter::visit(GroupingExpr& node) {
     node.result = node.expr->result->dup();
 }
 
+
+void Interpreter::visit(VariableExpr& node){
+    shared_ptr<Object> evaluated = environment->get(node.name->getLexme()); //oops shouldve just stuck to unique ptrs lol?
+
+    node.result = evaluated->dup();
+}
+
 std::unique_ptr<Expr> Interpreter::evaluate(std::unique_ptr<Expr> expr){
     expr->accept(*this);
     printf("has anything happened when we accept? %i\n",expr->result->getValue().boolVal);
@@ -176,6 +184,18 @@ void Interpreter::visit(PrintStmt& printStmt) {
 void Interpreter::visit(ExpressionStmt& expressionStmt) {
     expressionStmt.expression = evaluate(std::move(expressionStmt.expression));
 }
+
+void  Interpreter::visit(VarStmt& node) {
+    shared_ptr<Object> value = make_shared<Object>();
+    if(node.initialiser != nullptr) {
+        printf("!!! initialiser| \n");
+        node.initialiser = evaluate(move(node.initialiser));
+        value = move(node.initialiser->result);
+    }
+    printf("About to make object %i , %i\n ",value->getType(), value->getValue());
+    environment->define(node.name->getLexme(), make_shared<Object>(value->getType(), value->getValue()));
+}
+
 
 std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::interpret(std::unique_ptr<vector<unique_ptr<Stmt>>> statements) {
     //dont really like throwing exceptionss and catching them,....

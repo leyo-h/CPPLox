@@ -133,6 +133,10 @@ std::unique_ptr<Expr> Parser::primary() {
         consume(RIGHT_PAREN, "Expect ')' after expression");
         return std::make_unique<GroupingExpr>(std::move(expr));
     }
+
+    if (match({IDENTIFIER})) {
+        return std::make_unique<VariableExpr>(std::move(tokens->at(previous())));
+    }
     printf("Uh oh super invalid primary call! \n\n\n");
     return nullptr;
 
@@ -150,30 +154,50 @@ Parser::Parser(std::unique_ptr<std::vector<unique_ptr<Token>>> setTokens) {
 }
 
 //======== Statements=========
-unique_ptr<Stmt> Parser::statement(){
+unique_ptr<Stmt> Parser::statement() {
     if(match({PRINT})) return std::move(printStatement());
 
     return std::move(expressionStatement());
 }
 
-std::unique_ptr<Stmt> Parser::printStatement(){
+std::unique_ptr<Stmt> Parser::printStatement() {
     unique_ptr<Expr> expr = expression();
     consume(SEMICOLON,"expected semicolon after value");
     return std::move(std::make_unique<PrintStmt>(std::move(expr)));
 
 }
 
-std::unique_ptr<Stmt> Parser::expressionStatement(){
+std::unique_ptr<Stmt> Parser::expressionStatement() {
     unique_ptr<Expr> expr = expression();
     consume(SEMICOLON,"expected semicolon after expression");
     return std::move(std::make_unique<ExpressionStmt>(std::move(expr)));
 }
 
 
+std::unique_ptr<Stmt> Parser::declaration() {
+    if(match({VAR})) return move(varDeclaration());
+
+    return std::move(statement());
+
+}
+
+std::unique_ptr<Stmt> Parser::varDeclaration() {
+    int tkIdx = consume(IDENTIFIER,"Expected variable name");
+
+    std::unique_ptr<Expr> initialiser = nullptr;
+
+    if (match({EQUAL})) {
+        initialiser = expression();
+    }
+
+    consume(SEMICOLON,"Expected ; after variable declaration");
+    return make_unique<VarStmt>(move(tokens->at(tkIdx)), move(initialiser));
+}
+
 std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::parse(){
     std::unique_ptr<vector<unique_ptr<Stmt>>> statements = make_unique<vector<unique_ptr<Stmt>>>();
     while(!isAtEnd()) {
-        statements->push_back(statement());
+        statements->push_back(declaration());
     }
     return std::move(statements);
 }

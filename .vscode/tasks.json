@@ -39,6 +39,7 @@
                 "${workspaceFolder}/cpplox/parser.cpp",
                 "${workspaceFolder}/cpplox/interpreter.cpp",
                 "${workspaceFolder}/cpplox/stmt.cpp",
+                "${workspaceFolder}/cpplox/environment.cpp",
                 "-o",
                 "${workspaceFolder}/bin/cpplox.exe",
             ],
