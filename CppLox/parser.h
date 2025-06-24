@@ -30,7 +30,7 @@ private:
     std::unique_ptr<Stmt> ifStatement();
     std::unique_ptr<vector<unique_ptr<Stmt>>> block();
     std::unique_ptr<Stmt> whileStatement();
-    
+    std::unique_ptr<Stmt> forStatement();
 
     //Helpers
     bool match(std::vector<TokenType> types);

@@ -203,6 +203,7 @@ Parser::Parser(std::unique_ptr<std::vector<unique_ptr<Token>>> setTokens) {
 
 //======== Statements=========
 unique_ptr<Stmt> Parser::statement() {
+    if (match({FOR})) return std::move(forStatement());
     if(match({IF})) return std::move(ifStatement());
     if(match({PRINT})) return std::move(printStatement());
     if(match({WHILE})) return std::move(whileStatement());
@@ -215,6 +216,73 @@ std::unique_ptr<Stmt> Parser::printStatement() {
     unique_ptr<Expr> expr = expression();
     consume(SEMICOLON,"expected semicolon after value");
     return std::move(std::make_unique<PrintStmt>(std::move(expr)));
+
+}
+
+/// @brief Desugaring parser for for statements. Turns the for statement into a block contianing a variable and a while loop
+/// @return 
+std::unique_ptr<Stmt> Parser::forStatement() {
+    consume(LEFT_PAREN,"Expected ( after for ");
+
+    unique_ptr<Stmt> initialiser;
+    //Next we parse the initilaizer
+    if (match({SEMICOLON})) {
+        //If we get a semicolon straight away no initialiser
+        initialiser = nullptr;
+    } else if (match({VAR})){
+        //Declaration
+        initialiser = varDeclaration();
+    } else{
+        initialiser = expressionStatement();
+    }
+
+    //Now we get the condition
+    unique_ptr<Expr> condition = nullptr;
+    if(!check(SEMICOLON)) {
+        condition = expression();
+    }
+    consume(SEMICOLON,"Expected ; after for loop condition");
+
+    //Get incremement
+    unique_ptr<Expr> increment = nullptr;
+    if(!check(RIGHT_PAREN)) {
+        increment = expression();
+    }
+    consume(RIGHT_PAREN, "Expected ) after for loop increment");
+
+    //Now get the body
+    unique_ptr<Stmt> body;
+    body = statement();
+
+    unique_ptr<Stmt> output;
+    unique_ptr<vector<unique_ptr<Stmt>>> newBlock =  make_unique<vector<unique_ptr<Stmt>>>();
+    //Desugaring!!
+    if(increment != nullptr) {
+        newBlock->push_back(move(body));
+        newBlock->push_back(move(make_unique<ExpressionStmt>(move(increment))));
+        output = make_unique<BlockStmt>(move(newBlock));
+
+        body = move(output);
+    }
+
+    if (condition == nullptr) {
+        //condition is null so this is always true
+        condition = make_unique<LiteralExpr>(make_unique<Object>(true));
+    }
+    //Now create the while loop
+    unique_ptr<Stmt> whileLoop = make_unique<WhileStmt>(move(condition), move(body));
+    //Next we wrap the while loop in a block with the initialiser statement
+
+    unique_ptr<Stmt> forStmt;
+     unique_ptr<vector<unique_ptr<Stmt>>> forBlock =  make_unique<vector<unique_ptr<Stmt>>>();
+    if (initialiser != nullptr) {
+        forBlock->push_back(move(initialiser));
+        forBlock->push_back(move(whileLoop));
+        forStmt = make_unique<BlockStmt>(move(forBlock));
+        return forStmt;
+    }
+    //no initialiser is just a while loop
+    return whileLoop;
 
 }
 
