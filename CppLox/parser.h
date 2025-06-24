@@ -29,6 +29,7 @@ private:
     std::unique_ptr<Stmt> varDeclaration();
     std::unique_ptr<Stmt> ifStatement();
     std::unique_ptr<vector<unique_ptr<Stmt>>> block();
+    std::unique_ptr<Stmt> whileStatement();
     
 
     //Helpers

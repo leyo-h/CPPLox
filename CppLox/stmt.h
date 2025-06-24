@@ -71,4 +71,18 @@ public:
 
 };
 
+class WhileStmt : public Stmt {
+private:
+
+protected:
+
+public:
+    WhileStmt(unique_ptr<Expr> setCondition, unique_ptr<Stmt> setBody);
+    void accept(ASTNode& visitor) override;
+    unique_ptr<Expr> condition;
+    unique_ptr<Stmt> body;
+
+
+};
+
 

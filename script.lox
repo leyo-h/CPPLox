@@ -1,8 +1,5 @@
-var a = true or false;
-if(true and false){
-    print "A is ";
-    print a;
-}else{
-    print "false!!!";
-    print a;
+var i = 0;
+while (i < 10) {
+    print i;
+    i = i + 1;
 }

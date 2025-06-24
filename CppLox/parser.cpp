@@ -153,8 +153,11 @@ std::unique_ptr<Expr> Parser::assignment() {
 
         if(expr->getType() == VARIABLE) {
             std::unique_ptr<Token> name = move(dynamic_cast<VariableExpr&>(*expr).name); // this should never fail butt just incase :)
+
             return move(make_unique<AssignExpr>(move(name),move(value)));
         }
+        printf("Error invalid assignment target!\n");
+        exit(489);
     }
     return move(expr);
 }
@@ -202,6 +205,7 @@ Parser::Parser(std::unique_ptr<std::vector<unique_ptr<Token>>> setTokens) {
 unique_ptr<Stmt> Parser::statement() {
     if(match({IF})) return std::move(ifStatement());
     if(match({PRINT})) return std::move(printStatement());
+    if(match({WHILE})) return std::move(whileStatement());
     if(match({LEFT_BRACE})) return move(make_unique<BlockStmt>(block()));
 
     return std::move(expressionStatement());
@@ -228,6 +232,16 @@ std::unique_ptr<Stmt> Parser::ifStatement() {
     }
 
     return move(make_unique<IfStmt>(move(condition),move(thenBranch),move(elseBranch)));
+
+}
+
+std::unique_ptr<Stmt> Parser::whileStatement() {
+    consume(LEFT_PAREN, "Expected ( after if");
+    std::unique_ptr<Expr> condition = expression();
+    consume(RIGHT_PAREN, "Expected ) after condition");
+    std::unique_ptr<Stmt> body = statement();
+
+    return move(make_unique<WhileStmt>(move(condition),move(body)));
 
 }
 

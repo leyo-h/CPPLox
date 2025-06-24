@@ -44,7 +44,7 @@ void Environment::define(Token& name, shared_ptr<Object> obj) {
 }
 
 void Environment::assign(Token& name, shared_ptr<Object> obj) {
-    if(values.find(name.getLexme()) == values.end()) {
+    if(values.find(name.getLexme()) != values.end()) {
         values[name.getLexme()] = make_shared<Object>(*obj);
         return;
     }
@@ -53,5 +53,5 @@ void Environment::assign(Token& name, shared_ptr<Object> obj) {
         enclosing->assign(name,obj);
         return;
     }
-    printf("Error undefined variable %s on line %i",name.getLexme(),name.getLine());
+    printf("Error undefined variable %s on line %i",name.getLexme().c_str(), name.getLine());
 }

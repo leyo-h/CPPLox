@@ -235,6 +235,14 @@ void Interpreter::visit(IfStmt& node) {
     }
 }
 
+void Interpreter::visit(WhileStmt& node) {
+    node.condition = evaluate(move(node.condition));
+    while(isTruthy(*node.condition->result)) {
+        node.body = execute(move(node.body));
+        node.condition = evaluate(move(node.condition));
+    }
+}
+
 std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env) {
     shared_ptr<Environment> prevEnvironment = this->environment;
     this->environment = env; // we swap out our current env to the local one

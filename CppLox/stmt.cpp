@@ -48,3 +48,13 @@ IfStmt::IfStmt(unique_ptr<Expr> setCondition, unique_ptr<Stmt> setThenBranch, un
 void IfStmt::accept(ASTNode& visitor) {
     visitor.visit(*this);
 }
+
+WhileStmt::WhileStmt(unique_ptr<Expr> setCondition, unique_ptr<Stmt> setBody) {
+    condition = move(setCondition);
+    body = move(setBody);
+
+}
+
+void WhileStmt::accept(ASTNode& visitor) {
+    visitor.visit(*this);
+}

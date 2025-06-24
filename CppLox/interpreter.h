@@ -39,5 +39,5 @@ public:
     void visit(VarStmt& node) override;
     void visit(BlockStmt& node) override;
     void visit(IfStmt& node) override;
-
+    void visit(WhileStmt& node) override;
 };
