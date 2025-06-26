@@ -109,7 +109,7 @@ std::unique_ptr<Expr> Parser::unary() {
 
         return std::make_unique<UnaryExpr>(std::move(op),std::move(right));
     }
-    return std::move(primary());
+    return std::move(call());
 }
 
 std::unique_ptr<Expr> Parser::primary() {
@@ -189,6 +189,36 @@ std::unique_ptr<Expr> Parser::parseAnd() {
     }
     return move(expr);
 }
+
+std::unique_ptr<Expr> Parser::call() {
+    std::unique_ptr<Expr> expr = move(primary());
+
+    while(true) {
+        if (match({LEFT_PAREN})) {
+            expr = finishCall(move(expr));
+        }else {
+            break;
+        }
+    }
+
+    return move(expr);
+}
+
+std::unique_ptr<Expr> Parser::finishCall(unique_ptr<Expr> expr) {
+    unique_ptr<vector<unique_ptr<Expr>>> arguments = make_unique<vector<unique_ptr<Expr>>>();
+
+    //
+    if(!check(RIGHT_PAREN)) { // need to check incase of zero! arguments
+        do {
+            arguments->push_back(expression());
+        } while(match({COMMA}));
+    }
+
+    std::unique_ptr<Token> paren = move(tokens->at(consume(RIGHT_PAREN,"Expected ) after arguments")));
+
+    return move(make_unique<CallExpr>(move(expr),move(paren),move(arguments)));
+}
+
 
 int Parser::consume(TokenType type, const char* message) {
     if(check(type)) return advance();

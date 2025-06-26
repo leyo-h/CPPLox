@@ -8,6 +8,7 @@ class GroupingExpr;
 class VariableExpr;
 class AssignExpr;
 class LogicalExpr;
+class CallExpr;
 
 class Stmt;
 class ExpressionStmt;
@@ -36,6 +37,7 @@ public:
     virtual void visit(VariableExpr& node) = 0;
     virtual void visit(AssignExpr& node) = 0;
     virtual void visit(LogicalExpr& node) = 0;
+    virtual void visit(CallExpr& node) = 0;
 
 
     virtual void visit(ExpressionStmt& node) = 0;

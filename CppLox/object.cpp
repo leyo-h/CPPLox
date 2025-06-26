@@ -25,6 +25,10 @@ Object::Object(ObjectType type, ObjectValue value) {
             this->type = BOOL_LITERAL;
             this->value.boolVal = value.boolVal;
             break;
+        case CALLABLE:
+            this->type = CALLABLE;
+            this->value.callable = value.callable->dup();
+            
 
     }
 }
@@ -74,9 +78,17 @@ std::string Object::toString() const{
         if (value.boolVal) return "true";
         return "false";
         break;
+    case CALLABLE:
+        return std::string("<callable object>");
+        break;
     default:
         return std::string("NIL");
     }
+}
+
+Object::Object(CallableObject* value) {
+    this->type = CALLABLE;
+    this->value.callable = value->dup(); //we take ownership of the callable object.
 }
 
 //Getters as we dont need to change either of the objects properties after we start

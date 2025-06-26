@@ -21,6 +21,9 @@ private:
     std::unique_ptr<Expr> assignment();
     std::unique_ptr<Expr> parseOr();
     std::unique_ptr<Expr> parseAnd();
+    std::unique_ptr<Expr> call();
+    std::unique_ptr<Expr> finishCall(unique_ptr<Expr> expr);
+
 
     std::unique_ptr<Stmt> statement();
     std::unique_ptr<Stmt> printStatement();

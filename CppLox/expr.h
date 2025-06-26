@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <memory>
 #include "astnode.h"
+#include <vector>
 //Forward declare the classes
 
 typedef enum EXPRTYPE_T {
@@ -13,6 +14,8 @@ typedef enum EXPRTYPE_T {
     UNARY,
     VARIABLE,
     ASSIGN,
+    LOGICAL,
+    CALL,
 } EXPRTYPE;
 
 
@@ -101,4 +104,15 @@ public:
     unique_ptr<Expr> left;
     unique_ptr<Token> op;
     unique_ptr<Expr> right;
+};
+
+class CallExpr : public Expr {
+private:
+
+public:
+    void accept(ASTNode& visitor) override;
+    CallExpr(std::unique_ptr<Expr> setCallee, std::unique_ptr<Token> setParen, unique_ptr<vector<unique_ptr<Expr>>> setArguments);
+    unique_ptr<Expr> callee;
+    unique_ptr<Token> paren;
+    unique_ptr<vector<unique_ptr<Expr>>> arguments;
 };

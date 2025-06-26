@@ -2,6 +2,7 @@
 #include "expr.h"
 #include "lox.h"
 #include "environment.h"
+#include "clock.h"
 
 class Interpreter : public ASTNode {
 private:
@@ -29,6 +30,8 @@ public:
     void visit(VariableExpr& node) override;
     void visit(AssignExpr& node) override;
     void visit(LogicalExpr& node) override;
+    void visit(CallExpr& node) override;
+
 
     bool was_error = false;
     std::unique_ptr<Expr> evaluate(std::unique_ptr<Expr> expr);

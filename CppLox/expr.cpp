@@ -70,9 +70,22 @@ LogicalExpr::LogicalExpr(std::unique_ptr<Expr> setLeft, std::unique_ptr<Token> s
     this->left = std::move(setLeft);
     this->right = std::move(setRight);
     this->op = std::move(setOp);
-    this->type = BINARY;
+    this->type = LOGICAL;
 }
 
 void LogicalExpr::accept(ASTNode& visitor){
     visitor.visit(*this);
+}
+
+
+void CallExpr::accept(ASTNode& visitor) {
+    visitor.visit(*this);
+}
+
+CallExpr::CallExpr(std::unique_ptr<Expr> setCallee, std::unique_ptr<Token> setParen, unique_ptr<vector<unique_ptr<Expr>>> setArguments) {
+    callee = move(setCallee);
+    paren = move(setParen);
+    arguments = move(setArguments);
+    type = CALL;
+
 }

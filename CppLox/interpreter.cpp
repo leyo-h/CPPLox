@@ -3,6 +3,7 @@
 Interpreter::Interpreter() {
 
     this->environment = make_unique<Environment>();
+    this->environment->define(string("clock"), make_shared<Object>(new ClockFunction()));
 }
 
 void Interpreter::visit(BinaryExpr& node) {
@@ -103,7 +104,7 @@ void Interpreter::visit(GroupingExpr& node) {
 
 
 void Interpreter::visit(VariableExpr& node) {
-    shared_ptr<Object> evaluated = environment->get(node.name->getLexme()); //oops shouldve just stuck to unique ptrs lol?
+    shared_ptr<Object> evaluated = environment->get(node.name->getLexme()); //oops shouldve just stuck to unique ptrs lol? - nvm makes sense for functions probably but this is annoying 
 
     node.result = evaluated->dup();
 }
@@ -131,6 +132,35 @@ void Interpreter::visit(LogicalExpr& node) {
     node.result =  node.right->result->dup();
     return;
 }
+
+
+void Interpreter::visit(CallExpr& node) {
+    node.callee = evaluate(move(node.callee));
+    printf("node callee %i\n", node.callee->getType());
+    
+    unique_ptr<Object> callee = move(node.callee->result);
+    unique_ptr<vector<unique_ptr<Object>>> arguments = make_unique<vector<unique_ptr<Object>>>();
+
+    //Evaluate arguments 
+    for(int i = 0; i< node.arguments->size(); i++) {
+        (*(node.arguments))[i] = move(evaluate(move(node.arguments->at(i))));
+        arguments->push_back(move(node.arguments->at(i)->result));
+
+    }
+
+    if(callee->getType() != CALLABLE) {
+        printf("can only call functions and classes\n");
+        throw runtime_error("Can only call functions and classes");
+    }
+    CallableObject* function = callee->getValue().callable;
+    if(arguments->size() != function->arity()) {
+        printf("[Line %i] Number of arguments mismatch. Expected %i but got %i \n",node.paren->getLine(), arguments->size(), function->arity());
+        exit(777);
+    }
+    node.result =  function->call(*this, *arguments);
+
+}
+
 
 std::unique_ptr<Expr> Interpreter::evaluate(std::unique_ptr<Expr> expr){
     expr->accept(*this);
