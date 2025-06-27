@@ -3,6 +3,7 @@
 #include "lox.h"
 #include "environment.h"
 #include "clock.h"
+#include "loxfunction.h"
 
 class Interpreter : public ASTNode {
 private:
@@ -16,7 +17,6 @@ private:
     unique_ptr<Stmt> execute(unique_ptr<Stmt> statement);
     shared_ptr<Environment> environment;
 
-    std::unique_ptr<vector<unique_ptr<Stmt>>> executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env);
 public:
     virtual ~Interpreter() = default;
     Interpreter();
@@ -43,4 +43,10 @@ public:
     void visit(BlockStmt& node) override;
     void visit(IfStmt& node) override;
     void visit(WhileStmt& node) override;
+    void visit(FunctionStmt& node) override;
+
+    shared_ptr<Environment> globalEnvironment;
+    std::unique_ptr<vector<unique_ptr<Stmt>>> executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env);
+
+
 };

@@ -46,6 +46,7 @@ public:
 
     std::string toString() const;
     std::unique_ptr<Object> dup();
+    ~Object();
 };
 
 class CallableObject {
@@ -56,4 +57,5 @@ public:
     virtual unique_ptr<Object> call(Interpreter& interpreter, vector<unique_ptr<Object>>& arguments) = 0;
     virtual int arity() = 0;
     virtual CallableObject* dup() = 0; // create object with a callable in it...
+    int references = 0;// cba to implement dupes so we will just implement reference counting ig
 };

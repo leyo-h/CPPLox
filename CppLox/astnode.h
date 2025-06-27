@@ -17,7 +17,7 @@ class VarStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
-
+class FunctionStmt;
 /*
 Implementing "double dispatch" which is our method has to depend on 2 types ( later if its a statement or expression and then on the type?)
 
@@ -46,5 +46,6 @@ public:
     virtual void visit(BlockStmt& node) = 0;
     virtual void visit(IfStmt& node) = 0;
     virtual void visit(WhileStmt& node) = 0;
+    virtual void visit(FunctionStmt& node) = 0;
 
 };

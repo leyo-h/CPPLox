@@ -41,6 +41,7 @@
                 "${workspaceFolder}/cpplox/stmt.cpp",
                 "${workspaceFolder}/cpplox/environment.cpp",
                 "${workspaceFolder}/cpplox/clock.cpp",
+                "${workspaceFolder}/cpplox/loxfunction.cpp",
                 "-o",
                 "${workspaceFolder}/bin/cpplox.exe",
             ],

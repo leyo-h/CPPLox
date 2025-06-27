@@ -14,17 +14,18 @@ Environment::Environment(shared_ptr<Environment> setEnclosing) {
 
 void Environment::define(string name, shared_ptr<Object> obj) {
     //TODO might have to implement some cleanup here if an object was being used and is assigned over..
-    values[name] = std::make_shared<Object>(*obj);
+    values[name] = obj;
 }
 
 shared_ptr<Object> Environment::get(string name) {
     if(values.find(name) == values.end()) {
         //Cannot find the variable so we check the enclosing environment and throw error if its not found!
         if (enclosing != nullptr) return enclosing->get(name);
+        listTokens();
         printf("ERROR Could not find key w/ name %s\n",name.c_str());
         throw runtime_error("Cannot find jey name");
     }
-    return std::make_shared<Object>(*values[name]);   
+    return values[name];   
 }
 
 shared_ptr<Object> Environment::get(Token& name) {
@@ -54,4 +55,10 @@ void Environment::assign(Token& name, shared_ptr<Object> obj) {
         return;
     }
     printf("Error undefined variable %s on line %i",name.getLexme().c_str(), name.getLine());
+}
+
+void Environment::listTokens() {
+    for(auto it : this->values) {
+        printf("\nKEY: %s\n",it.first.c_str());
+    }
 }

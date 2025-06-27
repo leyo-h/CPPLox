@@ -34,6 +34,7 @@ private:
     std::unique_ptr<vector<unique_ptr<Stmt>>> block();
     std::unique_ptr<Stmt> whileStatement();
     std::unique_ptr<Stmt> forStatement();
+    std::unique_ptr<Stmt> function(string kind);
 
     //Helpers
     bool match(std::vector<TokenType> types);

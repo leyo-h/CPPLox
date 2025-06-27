@@ -27,7 +27,7 @@ Object::Object(ObjectType type, ObjectValue value) {
             break;
         case CALLABLE:
             this->type = CALLABLE;
-            this->value.callable = value.callable->dup();
+            this->value.callable = value.callable;
             
 
     }
@@ -38,6 +38,18 @@ Object::Object(ObjectType type, ObjectValue value) {
 Object::Object(double value){
     this->type = NUM_LITERAL;
     this->value.numVal = value;
+}
+
+Object::~Object() {
+    if(type == CALLABLE) {
+        value.callable->references -=1;
+        if(value.callable->references == 0){
+            delete value.callable;
+        }
+        
+
+    }
+    //oops lol definetly memory problems here
 }
 
 /// @brief Create a string object
@@ -88,7 +100,7 @@ std::string Object::toString() const{
 
 Object::Object(CallableObject* value) {
     this->type = CALLABLE;
-    this->value.callable = value->dup(); //we take ownership of the callable object.
+    this->value.callable = value; //we take ownership of the callable object.
 }
 
 //Getters as we dont need to change either of the objects properties after we start
@@ -103,6 +115,11 @@ ObjectValue Object::getValue() const {
 /// @brief Duplicates an object
 /// @return returns a pointer to the duplicated object
 std::unique_ptr<Object> Object::dup() {
-    std::unique_ptr<Object> output = std::make_unique<Object>(type, value);
+    std::unique_ptr<Object> output;
+    if(type == CALLABLE) {
+        output = std::make_unique<Object>(value.callable->dup());
+        return move(output);
+    }
+    output = std::make_unique<Object>(type, value);
     return std::move(output);
 }

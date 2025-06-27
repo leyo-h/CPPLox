@@ -7,6 +7,17 @@
 #include <vector>
 
 using namespace std;
+
+typedef enum STMTTYPE_T {
+    EXPRESSIONSTMT,
+    PRINTSTMT,
+    VARSTMT,
+    BLOCKSTMT,
+    IFSTMT,
+    WHILESTMT,
+    FUNCTIONSTMT,
+} STMTTYPE;
+
 class Stmt {
 private:
 public:
@@ -16,6 +27,7 @@ public:
 
     std::unique_ptr<Object> result;
     string printResult;
+    STMTTYPE type;
 };
 
 class ExpressionStmt : public Stmt {
@@ -81,6 +93,22 @@ public:
     void accept(ASTNode& visitor) override;
     unique_ptr<Expr> condition;
     unique_ptr<Stmt> body;
+
+
+};
+
+
+class FunctionStmt : public Stmt {
+private:
+
+protected:
+
+public:
+    FunctionStmt(unique_ptr<Token> setName, unique_ptr<vector<unique_ptr<Token>>> setParams, unique_ptr<vector<unique_ptr<Stmt>>> setBody);
+    void accept(ASTNode& visitor) override;
+    unique_ptr<Token> name;
+    unique_ptr<vector<unique_ptr<Token>>> params;
+    unique_ptr<vector<unique_ptr<Stmt>>> body;
 
 
 };

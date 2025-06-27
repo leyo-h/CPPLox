@@ -351,6 +351,7 @@ std::unique_ptr<Stmt> Parser::expressionStatement() {
 
 
 std::unique_ptr<Stmt> Parser::declaration() {
+    if(match({FUN})) return move(function("function"));
     if(match({VAR})) return move(varDeclaration());
     if(match({LEFT_BRACE})) return move(make_unique<BlockStmt>(block()));
     return std::move(statement());
@@ -380,6 +381,35 @@ std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::block() {
     consume(RIGHT_BRACE, "Expected } after block");
     return move(statements);
 }
+
+std::unique_ptr<Stmt> Parser::function(string kind) {
+    //First we need to get a function name
+     unique_ptr<Token> token = move((*tokens)[consume(IDENTIFIER,"Need kind name")]);
+     //Now parse parameter list!
+     consume(LEFT_PAREN, "Expected ( after function name");
+     unique_ptr<vector<unique_ptr<Token>>> params = make_unique<vector<unique_ptr<Token>>>();
+
+     if(!check(RIGHT_PAREN)) {
+        do {
+            if(params->size() > 255) {
+                printf("ERROR!! Too many params !!! (line %i)",token->getLine());
+                exit(839);
+            }
+
+            params->push_back(
+                move((*tokens)[consume(IDENTIFIER,"Expected parameter name")])
+            );
+
+        } while(match({COMMA}));
+     }
+     //finally get the right bracket at the end :)
+     consume(RIGHT_PAREN, "Expected ( after function name");
+     consume(LEFT_BRACE, "Expected { before function body");
+     unique_ptr<vector<unique_ptr<Stmt>>> body = block();
+
+     return make_unique<FunctionStmt>(move(token),move(params),move(body));
+}
+
 
 
 std::unique_ptr<vector<unique_ptr<Stmt>>> Parser::parse(){

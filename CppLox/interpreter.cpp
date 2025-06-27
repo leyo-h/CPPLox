@@ -1,9 +1,9 @@
 #include "interpreter.h"
 
 Interpreter::Interpreter() {
-
-    this->environment = make_unique<Environment>();
-    this->environment->define(string("clock"), make_shared<Object>(new ClockFunction()));
+    globalEnvironment = make_shared<Environment>();
+    this->environment = make_shared<Environment>(globalEnvironment);
+    globalEnvironment->define(string("clock"), make_shared<Object>(new ClockFunction()));
 }
 
 void Interpreter::visit(BinaryExpr& node) {
@@ -271,6 +271,15 @@ void Interpreter::visit(WhileStmt& node) {
         node.body = execute(move(node.body));
         node.condition = evaluate(move(node.condition));
     }
+}
+
+void Interpreter::visit(FunctionStmt& node) {
+    printf("in define !%s would be cool if we could define that!\n",node.name->getLexme().c_str());
+    //we move node.name as well in this call so we need to copy the node ,name
+    string name = node.name->getLexme();
+    environment->define(name,
+        make_shared<Object>(new LoxFunction(move(node.name),move(node.params),move(node.body)))
+    );
 }
 
 std::unique_ptr<vector<unique_ptr<Stmt>>> Interpreter::executeBlock(std::unique_ptr<vector<unique_ptr<Stmt>>> statements, shared_ptr<Environment> env) {

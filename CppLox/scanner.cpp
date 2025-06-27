@@ -166,6 +166,7 @@ void Scanner::initKeywordsMap() {
     keywords.insert({std::string("else"), ELSE});
     keywords.insert({std::string("false"), FALSE});
     keywords.insert({std::string("for"), FOR});
+    keywords.insert({std::string("fun"), FUN});
     keywords.insert({std::string("if"), IF});
     keywords.insert({std::string("nil"), NIL});
     keywords.insert({std::string("or"), OR});

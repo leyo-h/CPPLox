@@ -1,2 +1,5 @@
-var time = clock();
-print time;
+ fun add(a, b) {
+    print a + b;
+ }
+ print clock();
+ print add; // "<fn add>".

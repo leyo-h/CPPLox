@@ -2,6 +2,7 @@
 
 ClockFunction::ClockFunction() {
     start = time(0);
+    references = 1;
 }
 
 unique_ptr<Object> ClockFunction::call(Interpreter& interpreter, vector<unique_ptr<Object>>& arguments) {
